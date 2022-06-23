@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from "react";
+import Header from "./components/Header";
+import Main from "./components/Main";
+import "./index.css";
+import axios from "axios";
 
-function App() {
+const hash = "bd0722d5750b6362d5ba0212ca36726b";
+
+const App = () => {
+  const [items, setItems] = useState([]);
+  const [isLoading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetch = async () => {
+      const result = await axios(
+        `http://gateway.marvel.com/v1/public/characters?ts=1&apikey=344d40df0c8cc373141c1dc321fae9cf&hash=${hash}`
+      );
+      setItems(result.data.data.results);
+      setLoading(false)
+    };
+    fetch();
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-black text-white">
+      <Header />
+      <Main items={items} isLoading={isLoading} />
     </div>
   );
-}
+};
 
 export default App;
